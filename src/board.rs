@@ -31,12 +31,17 @@ impl Board {
     }
 
     pub fn populate_board(&mut self) {
+        if self.bombs > (self.size as u8 * self.size as u8 - 1) {println!("ERROR"); return}
+        let mut count = 0;
+        println!("Populating board");
         for _ in 0..self.bombs {
             let mut row: usize = rand::random::<usize>() % self.size;
             let mut col: usize = rand::random::<usize>() % self.size;
-            while !self.board[row][col].set_bomb() || self.board[row][col].is_bomb(){
+            while !self.board[row][col].set_bomb(){
                 row = rand::random::<usize>() % self.size;
                 col = rand::random::<usize>() % self.size;
+                count += 1;
+                if count == self.size*self.size {println!("ERROR"); return}
             }
             self.update_nearby(row, col);
         }

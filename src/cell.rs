@@ -34,8 +34,9 @@ impl Cell {
 
     //Returns if the placement of bomb is successful
     pub fn set_bomb(&mut self) -> bool{
+        if self.is_bomb {return false;}
         match self.cell_state {
-            CellState::Hidden => {self.is_bomb = true; return true},
+            CellState::Hidden => {self.is_bomb = true;  true},
             _ => return false,
             
         }

@@ -2,27 +2,11 @@
 mod cell;
 mod board;
 mod interface;
-use crate::board::Board;
 use crate::interface::Interface;
 
 fn main() {
-    let bombs: u8 = 5;
-    let size: usize = 6;
-    
-    let board =  Board::new(bombs, size);
-    //board[2][2].reveal();
-    /*reveal_8(2, 2, board.get_board_mut());
 
-    board.populate_board();
-
-    //reveal(1, 2, board.get_board_mut());
-    
-    
-    board.print_current_board();
-    println!("");
-    board.print_solved_board();*/
-
-    let mut ui = Interface::new(board);
+    let mut ui = Interface::new();
     ui.run();
     
 }
@@ -47,7 +31,21 @@ fn main() {
     }
 }
 
-
+    fn mark_rest (&mut self,x: usize, y: usize) {
+        let b = self.board.get_board_mut();
+        if x > 0 {
+            b[x-1][y].flag();
+            if y > 0 {b[x-1][y-1].flag();}
+            if y < b.len()-1 {b[x-1][y+1].flag();}
+        }
+        if x < b.len()-1 {
+            b[x+1][y].flag();
+            if y > 0 {b[x+1][y-1].flag();}
+            if y < b.len()-1 {b[x+1][y+1].flag();}
+        }
+        if y > 0 {b[x][y-1].flag();}
+        if y < b.len()-1 {b[x][y+1].flag();}
+    }
 
 
 fn flag_easy(x: usize, y: usize, b: &mut Vec<Vec<Cell>>) {
@@ -64,6 +62,25 @@ fn flag_easy(x: usize, y: usize, b: &mut Vec<Vec<Cell>>) {
         }
     } 
 }
+
+
+    fn count_revealed(&self, x: usize, y: usize) -> u8{
+        let b = self.board.get_board();
+        let mut count = 0;
+        if x > 0 {
+            if b[x-1][y].is_revealed() {count += 1;}
+            if y > 0 {if b[x-1][y-1].is_revealed() {count += 1;}}
+            if y < b.len()-1 {if b[x-1][y+1].is_revealed() {count += 1;}}
+        }
+        if x < b.len()-1 {
+            if b[x+1][y].is_revealed() {count += 1;}
+            if y > 0 {if b[x+1][y-1].is_revealed() {count += 1;}}
+            if y < b.len()-1 {if b[x+1][y+1].is_revealed() {count += 1;}}
+        }
+        if y > 0 {if b[x][y-1].is_revealed() {count += 1;}}
+        if y < b.len()-1 {if b[x][y+1].is_revealed() {count += 1;}}
+        return count;
+    }
 
 fn count_valid_cells(x: usize, y: usize, b: &Vec<Vec<Cell>>) -> u8{
     //Counts the number of cells that are not null

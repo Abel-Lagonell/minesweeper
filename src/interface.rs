@@ -113,7 +113,7 @@ impl Interface {
         }
     }
 
-    fn reveal(&mut self, row: usize, col: usize, board: &mut Board){
+    fn reveal(&mut self, row: usize, col: usize, board: &mut Board){//Recursive is not recursing
         if self.turn == 1 {
             board[row][col].reveal();
             if board[row][col].get_bombs_nearby() != 0 {return}
